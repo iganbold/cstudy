@@ -66,13 +66,17 @@ main()
   char c;
   char file_name[20];
   int i,j;
-  printf("%sWarning: the Field row and column number exactly match with the row and column number you provide.\nOtherwise, the PathFinder app will not work.\n",KYLW);
-  printf("%s",KNRM);
-  printf("Provide the exact row # and column #: \n");
-  printf("Enter the # of row: ");
-  scanf("%d", &customM);
-  printf("Enter the # of column: ");
-  scanf("%d", &customN);
+  
+  do {
+      printf("%sWarning: the Field row and column number exactly match with the row and column number you provide.\nOtherwise, the PathFinder app will not work.\n",KYLW);
+      printf("%s",KNRM);
+      printf("Provide the exact row # and column # \n%srange (5 <= row and column <=100): \n",KRED);
+      printf("%s",KNRM);
+      printf("Enter the # of row: ");
+      scanf("%d", &customM);
+      printf("Enter the # of column: ");
+      scanf("%d", &customN);
+  } while((5 >= customN || customN >= 100) || (5 >= customM || customM >= 100));
   
   printf("Type in the name of the file containing the Field\n");
   printf("Enter the Field name: ");

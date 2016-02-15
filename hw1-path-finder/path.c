@@ -93,7 +93,7 @@ main()
   findPath(array);
 }  
 
-// finding the path 
+// finding the path (using right hand rule)
 void findPath(char array[][N]) {
     
     struct Position currentPos,exitPos,entryPos;

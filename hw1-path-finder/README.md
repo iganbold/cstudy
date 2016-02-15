@@ -1,5 +1,5 @@
 ## PathFinder
-The app finds the path from given maze.
+The app finds the path from the given maze.
 * Used Language : C
 * Used algorithm : Right hand rule
 * Used Data Structures : struct, array

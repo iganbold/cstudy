@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define M 12
-#define N 10
+#define M 50
+#define N 50
 
 #define POSSIBLE_ZEROS (N*N)*2/3
 
 void FieldGenerator(char [][N]);
-void printField(const char[][N]);
+void printField(char[][N]);
 
 main()
 {
@@ -26,7 +26,7 @@ main()
 
 }
 
-void printField(const char maze[][N])
+void printField(char maze[][N])
 {
    int x, y;
                

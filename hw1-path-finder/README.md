@@ -11,16 +11,3 @@ Before Traverse: Screenshot
 After Traverse: Screenshot
 ```
 ![Screenshot PathFinder](https://lh3.googleusercontent.com/2Bxg9DW8mYCq9Zr68x9MppmYp4xcAgTvKJxevCfREIbgX9cdKTsl8UUJtpryTBCxP3s352-1iObqT6IAuK--hrZltmcXxlZ-VZy0kxLR-oea4U0jHzTo5dqlXPL--cBBXBpWVpy5pJbCrk2E3wV0KlaUeeEPNy28-E5Fvr5mdOHEyO1ofvCJ9RmM6nAXEzZuKztKoKQ9obBbDqVNVHaby5yhXtGvAqjhIO8k_-FTf4PNx0aUcHgVpA_hPIn7FDK04-CkFnw4_GbQe7ZJmtjyZTe4ailDQqXnVSiMQVzSPwuvqs5Zf3qHV4_AIQOe4_unECG2rriUh2_yM9Jc2_DE-jO2FHbdwqjODoSxkZtCWnTaITsoti0W38JK3QMwS5uQzfkSkh1X-VM_XlDaDH5s_xtWNaN_nU1gQDqsbhLXX6-fQEyLhT1qqi6lrRjjGPjdEtcMXmNzBlslg5RTLILjs1W6dQtpYLZtIy7jkZiwb5-ibN7p2RF7G5iGW7qlm2mR3aNUP7OSHpRLnrQKa0npD67QXWjvuhg14C4CpdzfvHzh4TExnotSyENLe6mrG4q47YM=w2106-h1752-no "screenshot PathFinder") 
-1  1  1  1  1  1  1  1  1  1  1  1  
-1  0  0  0  1  X  X  X  X  X  X  1  
-0  0  1  0  1  1  1  1  1  1  X  1  
-1  1  1  0  1  0  0  0  0  1  X  1  
-1  0  0  0  0  1  1  1  0  1  X  X  
-1  1  1  1  0  1  0  1  0  1  X  1  
-1  0  0  1  0  1  0  1  0  1  X  1  
-1  1  0  1  0  1  0  1  0  1  X  1  
-1  0  0  0  0  0  0  0  0  1  X  1  
-1  1  1  1  1  1  0  1  1  1  X  1  
-1  0  0  0  0  0  0  1  X  X  X  1  
-1  1  1  1  1  1  1  1  1  1  1  1  
-

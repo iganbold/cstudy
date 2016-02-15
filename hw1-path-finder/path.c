@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #define  M 100
 #define N 100
+#define KNRM  "\x1B[0m"
+#define KGRN  "\x1B[32m"
+#define KBLU  "\x1B[34m"
+#define KWHT  "\x1B[37m"
+
 
 int customM, customN;
 
@@ -178,19 +183,20 @@ void findPath(char array[][N]) {
     currentPos.column = entryPos.column;
     currentPos.dir = entryPos.dir;
     
-    while(1)
+    int i=0;
+    while(i < 100)
     {
         if(checkRight(array,&currentPos)) {         //done
-            printf("checkRight method \n");
+            // printf("\ncheckRight method \n");
             markVisitedPath(array,&currentPos);     //done
             turnRight(array,&currentPos);           //done      
             changeDirection(&currentPos);
         } else if(checkForward(array,&currentPos)) {//done
-            printf("checkForward method \n");
+            // printf("\ncheckForward method \n");
             markVisitedPath(array,&currentPos);     //done
             goForward(&currentPos);                 //done    
         } else {
-            printf("reverseDirection method \n");
+            // printf("\nreverseDirection method \n");
             reverseDirection(&currentPos);          //done
             continue;
         }
@@ -201,11 +207,14 @@ void findPath(char array[][N]) {
             break;
         } else if(isEqual(&currentPos, &exitPos)) {
             printf("Found exit");
+            markVisitedPath(array,&currentPos);
             printArray(array);
+            break;
         }  
         
-        printArray(array);
+        // printArray(array);
         // break;
+        i++;
     }
     
     // printf("\n{ \n\tentrance: \n\t{ \n\t\trow: %d,\n\t\tcol: %d\n\t} \n}",entryPos.row,entryPos.column);
@@ -223,10 +232,23 @@ void printArray(char array[][N]) {
     int i,j;
     for (i=0; i<customM; i++)
       for (j=0; j<customN; j++)  {
-        if (j == 0) printf("\n");                
+        if (j == 0) printf("\n");
+        switch(array[i][j]) {
+            case '1':
+                printf("%s",KGRN);
+                break;
+            case '0':
+                printf("%s",KWHT);
+                break;
+            case 'X':
+                printf("%s",KBLU);
+                break;
+        }
+        
         printf("%c  ",array[i][j]);
       }
     printf("\n");
+    printf("%s",KNRM);
 }
 
 // marking the visited path
@@ -258,33 +280,33 @@ void reverseDirection(struct Position *pos) {
 int checkRight(char array[][N],struct Position *pos) {
     switch(pos->dir) {
         case 'd':
-            printf("checkRight D: %c",array[pos->row][(pos->column-1)]);
+            // printf("checkRight D: %c",array[pos->row][(pos->column-1)]);
             return ((array[pos->row][(pos->column-1)] == '0') || (array[pos->row][(pos->column-1)] == 'X'));
         case 'u':
-            printf("checkRight U: %c",array[pos->row][(pos->column+1)]);
+            // printf("checkRight U: %c",array[pos->row][(pos->column+1)]);
             return ((array[pos->row][(pos->column+1)] == '0') || (array[pos->row][(pos->column+1)] == 'X'));
         case 'l':
-            printf("checkRight L: %c",array[(pos->row-1)][pos->column]);
+            // printf("checkRight L: %c",array[(pos->row-1)][pos->column]);
             return ((array[(pos->row-1)][pos->column] == '0') || (array[(pos->row-1)][pos->column] == 'X'));
         case 'r':
-            printf("checkRight R: %c",array[(pos->row+1)][pos->column]);
-            return ((array[(pos->row+1)][pos->column] == '0') || (array[(pos->row+1)][pos->column] == '0'));
+            // printf("checkRight R: %c",array[(pos->row+1)][pos->column]);
+            return ((array[(pos->row+1)][pos->column] == '0') || (array[(pos->row+1)][pos->column] == 'X'));
     }
 }
 
 int checkForward(char array[][N],struct Position *pos) {
     switch(pos->dir) {
         case 'd':
-            printf("checkForward D: %c",array[(pos->row+1)][pos->column]);
+            // printf("checkForward D: %c",array[(pos->row+1)][pos->column]);
             return ((array[(pos->row+1)][pos->column] == '0') || (array[(pos->row+1)][pos->column] == 'X'));
         case 'u':
-            printf("checkForward U: %c",array[(pos->row-1)][pos->column]);
+            // printf("checkForward U: %c",array[(pos->row-1)][pos->column]);
             return ((array[(pos->row-1)][pos->column] == '0') || (array[(pos->row-1)][pos->column] == 'X'));
         case 'l':
-            printf("checkForward L: %c",array[pos->row][(pos->column-1)]);
+            // printf("checkForward L: %c",array[pos->row][(pos->column-1)]);
             return ((array[pos->row][(pos->column-1)] == '0') || (array[pos->row][(pos->column-1)] == 'X'));
         case 'r':
-            printf("checkForward R: %c",array[pos->row][(pos->column+1)]);
+            // printf("checkForward R: %c",array[pos->row][(pos->column+1)]);
             return ((array[pos->row][(pos->column+1)] == '0') || (array[pos->row][(pos->column+1)] == 'X'));
     }
 }
@@ -292,14 +314,19 @@ int checkForward(char array[][N],struct Position *pos) {
 void turnRight(char array[][N],struct Position *pos) {
     switch(pos->dir) {
         case 'd':
+            // printf("turnRight origin: D\n");
             goLeft(pos);
             break;
         case 'u':
+            // printf("turnRight origin: U\n");
             goRigth(pos);
             break;
         case 'l':
+            // printf("turnRight origin: L\n");
             goUp(pos);
+            break;
         case 'r':
+            // printf("turnRight origin: R\n");
             goDown(pos);
             break;
     }
@@ -310,9 +337,9 @@ void goRigth (struct Position *pos) {
 }
 
 void goLeft (struct Position *pos) {
-    printf("goLeftBefore: %d\n",(pos->column));
+    // printf("goLeftBefore: %d\n",(pos->column));
     pos->column = (pos->column-1);
-    printf("goLeftAfter: %d\n",(pos->column));
+    // printf("goLeftAfter: %d\n",(pos->column));
 }
 
 void goUp (struct Position *pos) {
@@ -333,6 +360,7 @@ void changeDirection(struct Position *pos) {
             break;
         case 'l':
             pos->dir = 'u';
+            break;
         case 'r':
             pos->dir = 'd';
             break;

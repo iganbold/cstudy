@@ -22,8 +22,8 @@ int customM, customN;
 // loop direction for finding exit and entrance 
 int start1,start2;
 
-// Position type represnts positions on the maze
-// and which direction (DOWN, RIGHT, UP, LEFT) it is going
+// Position type represnts the positions on the maze
+// and the direction (DOWN, RIGHT, UP, LEFT) it is going
 struct Position {
    int row;
    int column;

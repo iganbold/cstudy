@@ -5,7 +5,7 @@ The app finds the path from the given maze.
 * Used Data Structures : struct, array
 
 ## Example
-### Screenshots
+### Screenshots 50x50
 ```
 Before Traverse: Screenshot
 ```

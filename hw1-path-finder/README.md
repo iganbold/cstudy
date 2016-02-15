@@ -1,4 +1,7 @@
 ## PathFinder
+* Used Language : C
+* Used algorithm : Right hand rule
+* Used Data Structures : struct, array
 
 ## Example
 ### Screenshots

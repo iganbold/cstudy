@@ -6,6 +6,13 @@
 #define KGRN  "\x1B[32m"
 #define KBLU  "\x1B[34m"
 #define KWHT  "\x1B[37m"
+#define RIGHT 'r'
+#define LEFT  'l'
+#define UP    'u'
+#define DOWN  'd'
+#define ZERO  '0'
+#define ONE   '1'
+#define XMARK 'X'
 
 
 int customM, customN;
@@ -13,17 +20,18 @@ int customM, customN;
 struct Position {
    int row;
    int column;
-   int isEntrance;
+   int isZeroWall;
    char dir;
 };
 
-void findRowEntrance(char [][N], int, int, struct Position *pos);
-void findColumnEntrance(char [][N], int, int, struct Position *pos);
+void findPath(char [][N]);
 void findEntrance(char [][N], struct Position *pos);
 void findExit(char [][N], struct Position *pos); 
-void findPath(char [][N]);
+void findZeroWall(char [][N], struct Position *pos,int);
+void findRowEntrance(char [][N], int, int, struct Position *pos);
+void findColumnEntrance(char [][N], int, int, struct Position *pos);
 void printArray(char [][N]);
-int isEqual(struct Position *pos1,struct Position *pos2);
+int isPositionEqual(struct Position *pos1,struct Position *pos2);
 void markVisitedPath(char [][N],struct Position *pos);
 void reverseDirection(struct Position *pos);
 int checkRight(char array[][N],struct Position *pos);
@@ -44,7 +52,7 @@ main()
   char file_name[20];
   int i,j;
   
-  printf("Enter row and column: \n");
+  printf("Provide row # and column #: \n");
   printf("Enter # of row: ");
   scanf("%d", &customM);
   printf("Enter # of column: ");
@@ -56,126 +64,21 @@ main()
   for (i=0; i<customM; i++)
    for (j=0; j<customN; j++){
      c=fgetc(fptr); 
-     while ( !((c == '1')||(c =='0')) ) c=fgetc(fptr);
+     while ( !((c == ONE)||(c ==ZERO)) ) c=fgetc(fptr);
      array[i][j]=c;
    }
   fclose(fptr);
 
   printArray(array);
-  
-  //Path Finder App
-//   struct Position
-  
+    
   findPath(array);
 }  
 
-// finding the entrance 
-void findEntrance(char array[][N], struct Position *pos) {
-    pos->isEntrance = 0;
-    
-    int i;
-    for(i=0; i< 4;i++)
-    {
-        switch(i) {
-            case 0:
-                // finding entrance from first top row
-                findRowEntrance(array,0,customN,pos);
-                break;
-            case 1:
-                // finding entrance from last column
-                findColumnEntrance(array,(customN-1),customM,pos);
-                break;
-            case 2:
-                // finding entrance from last bottow row
-                findRowEntrance(array,(customM-1),customN,pos);
-                break;
-            case 3:
-                // finding entrance from first column
-                findColumnEntrance(array,0,customM,pos);
-                break;
-        }
-        
-        if(pos->isEntrance) {
-            switch(i) {
-                case 0:
-                    pos->dir = 'd';
-                    break;
-                case 1:
-                    pos->dir = 'l';
-                    break;
-                case 2:
-                    pos->dir = 'u';
-                    break;
-                case 3:
-                    pos->dir = 'r';
-                    break;
-            }
-            break;
-        }
-    }
-}
-
-// finding the exit
-void findExit(char array[][N], struct Position *pos) {
-    pos->isEntrance = 0;
-    
-    int i;
-    for(i=3; i>= 0;i--)
-    {
-        switch(i) {
-            case 0:
-                // finding entrance from first top row
-                findRowEntrance(array,0,customN,pos);
-                break;
-            case 1:
-                // finding entrance from last column
-                findColumnEntrance(array,(customN-1),customM,pos);
-                break;
-            case 2:
-                // finding entrance from last bottow row
-                findRowEntrance(array,(customM-1),customN,pos);
-                break;
-            case 3:
-                // finding entrance from first column
-                findColumnEntrance(array,0,customM,pos);
-                break;
-        }
-        
-        if(pos->isEntrance) break;
-    }
-    
-}
-
-void findRowEntrance(char array[][N],int row, int size, struct Position *pos) {
-    int i;
-    for(i=0;i<size;i++) {
-     if(array[row][i] == '0')
-     {
-         pos->isEntrance = 1;
-         pos->row = row;
-         pos->column = i;
-         break;
-     }
-    } 
-}
-
-void findColumnEntrance(char array[][N], int column, int size, struct Position *pos) 
-{
-    int i;
-    for(i=0;i<size;i++) {
-      if(array[i][column] == '0')
-      {
-        pos->isEntrance = 1;
-        pos->row = i;
-        pos->column = column;
-        break;
-      }
-    }
-}
-
 // finding the path 
 void findPath(char array[][N]) {
+    
     struct Position currentPos,exitPos,entryPos;
+    
     findEntrance(array, &entryPos);
     findExit(array, &exitPos);
   
@@ -183,64 +86,147 @@ void findPath(char array[][N]) {
     currentPos.column = entryPos.column;
     currentPos.dir = entryPos.dir;
     
-    int i=0;
-    while(i < 100)
-    {
-        if(checkRight(array,&currentPos)) {         //done
-            // printf("\ncheckRight method \n");
-            markVisitedPath(array,&currentPos);     //done
-            turnRight(array,&currentPos);           //done      
+    while(1) {
+        if(checkRight(array,&currentPos)) {         
+            markVisitedPath(array,&currentPos);     
+            turnRight(array,&currentPos);                 
             changeDirection(&currentPos);
-        } else if(checkForward(array,&currentPos)) {//done
-            // printf("\ncheckForward method \n");
-            markVisitedPath(array,&currentPos);     //done
-            goForward(&currentPos);                 //done    
+        } else if(checkForward(array,&currentPos)) {
+            markVisitedPath(array,&currentPos);     
+            goForward(&currentPos);                     
         } else {
-            // printf("\nreverseDirection method \n");
-            reverseDirection(&currentPos);          //done
+            reverseDirection(&currentPos);          
             continue;
         }
         
-        if(isEqual(&currentPos, &entryPos)) {
-            printf("No exit");
+        if(isPositionEqual(&currentPos, &entryPos)) {
+            printf(" :( No exit");
             printArray(array);
             break;
-        } else if(isEqual(&currentPos, &exitPos)) {
-            printf("Found exit");
+        } else if(isPositionEqual(&currentPos, &exitPos)) {
+            printf("\n****************\n");
+            printf("*      WOW     *\n");
+            printf("*  Found exit  *\n");
+            printf("* @ r: %d c: %d  *\n",currentPos.row,currentPos.column);
+            printf("****************\n");
             markVisitedPath(array,&currentPos);
             printArray(array);
             break;
         }  
-        
-        // printArray(array);
-        // break;
-        i++;
     }
     
-    // printf("\n{ \n\tentrance: \n\t{ \n\t\trow: %d,\n\t\tcol: %d\n\t} \n}",entryPos.row,entryPos.column);
-    // printf("\n");
-  
-    // printf("\n{ \n\tcurrent: \n\t{ \n\t\trow: %d,\n\t\tcol: %d\n\t,\n\t\tdir: %c\n\t,\n\t\tisEntrance: %d\n\t} \n}",currentPos.row,currentPos.column,currentPos.dir,currentPos.isEntrance);
     printf("currentPos column: %d row: %d",currentPos.column,currentPos.row);
     printf("\n");
-  
-    // printf("\n{ \n\texit: \n\t{ \n\t\trow: %d,\n\t\tcol: %d\n\t} \n}",exitPos.row,exitPos.column);
-    // printf("\n");
 }
 
+// finding the entrance 
+void findEntrance(char array[][N], struct Position *pos) {
+    pos->isZeroWall = 0;
+    
+    int i;
+    for(i=0; i< 4;i++)
+    {
+        findZeroWall(array,pos,i);
+        if(pos->isZeroWall) break;
+    }
+}
+
+// finding the exit
+void findExit(char array[][N], struct Position *pos) {
+    pos->isZeroWall = 0;
+    
+    int i;
+    for(i=3; i>= 0;i--)
+    {
+        findZeroWall(array,pos,i);
+        if(pos->isZeroWall) break;
+    }
+    
+}
+
+// finds zero from given wall and 
+void findZeroWall(char array[][N], struct Position *pos,int wall) {
+    switch(wall) {
+        case 0:
+            // finding zero from first top row
+            findRowEntrance(array,0,customN,pos);
+            break;
+        case 1:
+            // finding entrance from last column
+            findColumnEntrance(array,(customN-1),customM,pos);
+            break;
+        case 2:
+            // finding entrance from last bottow row
+            findRowEntrance(array,(customM-1),customN,pos);
+            break;
+        case 3:
+            // finding entrance from first column
+            findColumnEntrance(array,0,customM,pos);
+            break;
+    }
+        
+    if(pos->isZeroWall) {
+        switch(wall) {
+            case 0:
+                pos->dir = DOWN;
+                break;
+            case 1:
+                pos->dir = LEFT;
+                break;
+            case 2:
+                pos->dir = UP;
+                break;
+            case 3:
+                pos->dir = RIGHT;
+                break;
+        }
+    }
+}
+
+// finds '0' from given wall(row)
+void findRowEntrance(char array[][N],int row, int size, struct Position *pos) {
+    int i;
+    for(i=0;i<size;i++) {
+     if(array[row][i] == ZERO)
+     {
+         pos->isZeroWall = 1;
+         pos->row = row;
+         pos->column = i;
+         break;
+     }
+    } 
+}
+
+// finds '0' from given wall(column)
+void findColumnEntrance(char array[][N], int column, int size, struct Position *pos) 
+{
+    int i;
+    for(i=0;i<size;i++) {
+      if(array[i][column] == ZERO)
+      {
+        pos->isZeroWall = 1;
+        pos->row = i;
+        pos->column = column;
+        break;
+      }
+    }
+}
+
+
+// prints maze with kernel color (1:green, 0:white, X:blue)
 void printArray(char array[][N]) {
     int i,j;
     for (i=0; i<customM; i++)
       for (j=0; j<customN; j++)  {
         if (j == 0) printf("\n");
         switch(array[i][j]) {
-            case '1':
+            case ONE:
                 printf("%s",KGRN);
                 break;
-            case '0':
+            case ZERO:
                 printf("%s",KWHT);
                 break;
-            case 'X':
+            case XMARK:
                 printf("%s",KBLU);
                 break;
         }
@@ -251,82 +237,81 @@ void printArray(char array[][N]) {
     printf("%s",KNRM);
 }
 
-// marking the visited path
+// marks the visited path
 void markVisitedPath(char array[][N],struct Position *pos) {
-    array[pos->row][pos->column]='X';
+    array[pos->row][pos->column]=XMARK;
 }
 
-int isEqual(struct Position *pos1, struct Position *pos2) {
+// checks the equality of 2 different Position
+int isPositionEqual(struct Position *pos1, struct Position *pos2) {
     return (pos1->row == pos2->row) && (pos1->column == pos2->column);
 }
 
+// reverses the given Position's direction
 void reverseDirection(struct Position *pos) {
     switch(pos->dir) {
-        case 'u':
-            pos->dir = 'd';
+        case UP:
+            pos->dir = DOWN;
             break;
-        case 'd':
-            pos->dir = 'u';
+        case DOWN:
+            pos->dir = UP;
             break;
-        case 'r':
-            pos->dir = 'l';
+        case RIGHT:
+            pos->dir = LEFT;
             break;
-        case 'l':
-            pos->dir = 'r';
+        case LEFT:
+            pos->dir = RIGHT;
             break;    
     }
 }
 
+// checks the given Position's right side is '0' or 'X' 
+// if right side is '0' or 'X' return 1
+// else return 0
 int checkRight(char array[][N],struct Position *pos) {
     switch(pos->dir) {
-        case 'd':
-            // printf("checkRight D: %c",array[pos->row][(pos->column-1)]);
-            return ((array[pos->row][(pos->column-1)] == '0') || (array[pos->row][(pos->column-1)] == 'X'));
-        case 'u':
-            // printf("checkRight U: %c",array[pos->row][(pos->column+1)]);
-            return ((array[pos->row][(pos->column+1)] == '0') || (array[pos->row][(pos->column+1)] == 'X'));
-        case 'l':
-            // printf("checkRight L: %c",array[(pos->row-1)][pos->column]);
-            return ((array[(pos->row-1)][pos->column] == '0') || (array[(pos->row-1)][pos->column] == 'X'));
-        case 'r':
-            // printf("checkRight R: %c",array[(pos->row+1)][pos->column]);
-            return ((array[(pos->row+1)][pos->column] == '0') || (array[(pos->row+1)][pos->column] == 'X'));
+        case DOWN:
+            return ((array[pos->row][(pos->column-1)] == ZERO) || (array[pos->row][(pos->column-1)] == XMARK));
+        case UP:
+            return ((array[pos->row][(pos->column+1)] == ZERO) || (array[pos->row][(pos->column+1)] == XMARK));
+        case LEFT:
+            return ((array[(pos->row-1)][pos->column] == ZERO) || (array[(pos->row-1)][pos->column] == XMARK));
+        case RIGHT:
+            return ((array[(pos->row+1)][pos->column] == ZERO) || (array[(pos->row+1)][pos->column] == XMARK));
     }
 }
 
+// checks the given Position's front side is '0' or 'X'
+// based on the it's direction
+// if front side is '0' or 'X' return 1
+// else return 0
 int checkForward(char array[][N],struct Position *pos) {
     switch(pos->dir) {
-        case 'd':
-            // printf("checkForward D: %c",array[(pos->row+1)][pos->column]);
-            return ((array[(pos->row+1)][pos->column] == '0') || (array[(pos->row+1)][pos->column] == 'X'));
-        case 'u':
-            // printf("checkForward U: %c",array[(pos->row-1)][pos->column]);
-            return ((array[(pos->row-1)][pos->column] == '0') || (array[(pos->row-1)][pos->column] == 'X'));
-        case 'l':
-            // printf("checkForward L: %c",array[pos->row][(pos->column-1)]);
-            return ((array[pos->row][(pos->column-1)] == '0') || (array[pos->row][(pos->column-1)] == 'X'));
-        case 'r':
-            // printf("checkForward R: %c",array[pos->row][(pos->column+1)]);
-            return ((array[pos->row][(pos->column+1)] == '0') || (array[pos->row][(pos->column+1)] == 'X'));
+        case DOWN:
+            return ((array[(pos->row+1)][pos->column] == ZERO) || (array[(pos->row+1)][pos->column] == XMARK));
+        case UP:
+            return ((array[(pos->row-1)][pos->column] == ZERO) || (array[(pos->row-1)][pos->column] == XMARK));
+        case LEFT:
+            return ((array[pos->row][(pos->column-1)] == ZERO) || (array[pos->row][(pos->column-1)] == XMARK));
+        case RIGHT:
+            return ((array[pos->row][(pos->column+1)] == ZERO) || (array[pos->row][(pos->column+1)] == XMARK));
     }
 }
 
+// changes the given Position's position to right
+// based on the it's direction
 void turnRight(char array[][N],struct Position *pos) {
     switch(pos->dir) {
-        case 'd':
-            // printf("turnRight origin: D\n");
+        case DOWN:
             goLeft(pos);
             break;
-        case 'u':
-            // printf("turnRight origin: U\n");
+        case UP:
             goRigth(pos);
             break;
-        case 'l':
-            // printf("turnRight origin: L\n");
+        case LEFT:
             goUp(pos);
             break;
-        case 'r':
-            // printf("turnRight origin: R\n");
+        case RIGHT:
             goDown(pos);
             break;
     }
@@ -337,9 +322,7 @@ void goRigth (struct Position *pos) {
 }
 
 void goLeft (struct Position *pos) {
-    // printf("goLeftBefore: %d\n",(pos->column));
     pos->column = (pos->column-1);
-    // printf("goLeftAfter: %d\n",(pos->column));
 }
 
 void goUp (struct Position *pos) {
@@ -350,36 +333,40 @@ void goDown(struct Position *pos) {
     pos->row=(pos->row+1);   
 }
 
-void changeDirection(struct Position *pos) {
+// changes the given Position's position to forward
+// based on the it's direction
+void goForward(struct Position *pos) {
     switch(pos->dir) {
-        case 'd':
-            pos->dir = 'l';
+        case DOWN:
+            goDown(pos);
             break;
-        case 'u':
-            pos->dir = 'r';
+        case UP:
+            goUp(pos);
             break;
-        case 'l':
-            pos->dir = 'u';
+        case LEFT:
+            goLeft(pos);
             break;
-        case 'r':
-            pos->dir = 'd';
+        case RIGHT:
+            goRigth(pos);
             break;
     }
 }
 
-void goForward(struct Position *pos) {
+// chages the given Position's direction
+// based on the it's direction
+void changeDirection(struct Position *pos) {
     switch(pos->dir) {
-        case 'd':
-            goDown(pos);
+        case DOWN:
+            pos->dir = LEFT;
             break;
-        case 'u':
-            goUp(pos);
+        case UP:
+            pos->dir = RIGHT;
             break;
-        case 'l':
-            goLeft(pos);
+        case LEFT:
+            pos->dir = UP;
             break;
-        case 'r':
-            goRigth(pos);
+        case RIGHT:
+            pos->dir = DOWN;
             break;
     }
 }

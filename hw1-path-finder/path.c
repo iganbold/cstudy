@@ -18,6 +18,8 @@
 
 // custom row and column 
 int customM, customN;
+
+// loop direction for finding exit and entrance 
 int start1,start2;
 
 // Position type represnts positions on the maze
@@ -146,7 +148,7 @@ void printPathFound(struct Position *pos) {
     printf("\n****************\n");
     printf("*      WOW     *\n");
     printf("*  Path found  *\n");
-    printf("* @ r: %d c: %d  *\n",pos->row,pos->column);
+    printf("  @ r: %d c: %d  \n",pos->row,pos->column);
     printf("****************\n");
 }
 

@@ -109,12 +109,6 @@ void findPath(char array[][N]) {
     printf("* Entrance @ row: %d column: %d \n",entryPos.row,entryPos.column);
     printf("* Exit @ row: %d column: %d \n",exitPos.row,exitPos.column);
     
-    if(isEntranceBlocked(array,&entryPos)) {
-        markVisitedPath(array,&entryPos); 
-        printArray(array);
-        printNoPathFound();
-    } else {
-    
         while(1) {
             if(checkRight(array,&currentPos)) {         
                 markVisitedPath(array,&currentPos);     
@@ -125,10 +119,10 @@ void findPath(char array[][N]) {
                 goForward(&currentPos);                     
             } else {
                 reverseDirection(&currentPos);          
-                continue;
             }
             
             if(isPositionEqual(&currentPos, &entryPos)) {
+                markVisitedPath(array,&currentPos);
                 printArray(array);
                 printNoPathFound();
                 break;
@@ -139,7 +133,6 @@ void findPath(char array[][N]) {
                 break;
             }  
         }
-    }
 }
 
 void printNoPathFound() {
@@ -160,36 +153,6 @@ void copyPoint(struct Position *pos1, struct Position *pos2) {
     pos1->row = pos2->row;
     pos1->column = pos2->column;
     pos1->dir = pos2->dir;
-}
-
-// Checks Entrance Position blocked by three ones
-int isEntranceBlocked(char array[][N],struct Position *pos) {
-    switch(pos->dir) {
-        case DOWN:
-            return (isRightBlocked(array,pos) && isLeftBlocked(array,pos) && isDownBlocked(array,pos));
-        case UP:
-            return (isRightBlocked(array,pos) && isLeftBlocked(array,pos) && isUpBlocked(array,pos));
-        case LEFT:
-            return (isUpBlocked(array,pos) && isLeftBlocked(array,pos) && isDownBlocked(array,pos));
-        case RIGHT:
-            return (isRightBlocked(array,pos) && isUpBlocked(array,pos) && isDownBlocked(array,pos));
-    }
-}
-
-int isRightBlocked(char array[][N],struct Position *pos) {
-    return (array[pos->row][pos->column+1] == ONE);   
-}
-
-int isLeftBlocked(char array[][N],struct Position *pos) {
-    return (array[pos->row][pos->column-1] == ONE);   
-}
-
-int isUpBlocked(char array[][N],struct Position *pos) {
-    return (array[pos->row-1][pos->column] == ONE);   
-}
-
-int isDownBlocked(char array[][N],struct Position *pos) {
-    return (array[pos->row+1][pos->column] == ONE);   
 }
 
 // finding the entrance 

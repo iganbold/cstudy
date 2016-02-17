@@ -1,5 +1,5 @@
 ## PathFinder
-####Purpose: 
+####Purpose 
 The app finds the path from the given maze. The Maze is beween 5 and 100 grid.
 
 ####Tools

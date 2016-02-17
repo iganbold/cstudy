@@ -1,8 +1,13 @@
 ## PathFinder
-The app finds the path from the given maze.
+Purpose: The app finds the path from the given maze.
+Given: 50x50 grid maze.
+
+Tools
 * Used Language : C
 * Used algorithm : Right hand rule
 * Used Data Structures : struct, array
+
+Input : 
 
 ## Example
 ### Screenshots 50x50

@@ -8,9 +8,9 @@ Tools
 * Used Data Structures : struct, array
 
 ```
-Input : User specified row and column entry. As well as the file name of the maze.
+Input :   User specified row and column entry. As well as the file name of the maze.
 Process : Find the path based on 'Right hand rule'
-Output : Path Found or No Path found
+Output :  Path Found or No Path found
 ```
 
 ## Example

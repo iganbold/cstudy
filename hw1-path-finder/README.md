@@ -7,7 +7,9 @@ Tools
 * Used algorithm : Right hand rule
 * Used Data Structures : struct, array
 
-Input : 
+Input : #row , #column , the file name of the maze.
+Process : Find the path based on 'Right hand rule'
+Output : Path Found || No Path found
 
 ## Example
 ### Screenshots 50x50

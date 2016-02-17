@@ -1,18 +1,18 @@
 ## PathFinder
-####Purpose: The app finds the path from the given maze.
+####Purpose: 
+The app finds the path from the given maze. The Maze is beween 5 and 100 grid.
 
-Tools
+####Tools
 * Used Language: C
 * Used algorithm: Right hand rule
 * Used Data Structures: Struct, Array
 
+## Example
 ```
 Input:    User specified row and column entry. As well as the file name of the maze.
 Process:  Find the path based on 'Right hand rule'.
 Output:   Path Found or No Path found.
 ```
-
-## Example
 ### Screenshots 50x50
 ```
 Before Traverse: Screenshot

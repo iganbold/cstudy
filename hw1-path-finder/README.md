@@ -13,7 +13,7 @@ Input:    User specified row and column entry. As well as the file name of the m
 Process:  Find the path based on 'Right hand rule'.
 Output:   Path Found or No Path found.
 ```
-### Screenshots 50x50
+#### Screenshots 50x50
 ```
 Before Traverse: Screenshot
 ```

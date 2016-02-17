@@ -3,14 +3,14 @@ Purpose: The app finds the path from the given maze.
 Given: 50x50 grid maze.
 
 Tools
-* Used Language : C
-* Used algorithm : Right hand rule
-* Used Data Structures : struct, array
+* Used Language: C
+* Used algorithm: Right hand rule
+* Used Data Structures: Struct, Array
 
 ```
-Input :   User specified row and column entry. As well as the file name of the maze.
-Process : Find the path based on 'Right hand rule'
-Output :  Path Found or No Path found
+Input:    User specified row and column entry. As well as the file name of the maze.
+Process:  Find the path based on 'Right hand rule'.
+Output:   Path Found or No Path found.
 ```
 
 ## Example

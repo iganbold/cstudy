@@ -1,8 +1,5 @@
 ## PathFinder
-####Purpose: 
-The app finds the path from the given maze.
-####Given: 
-50x50 grid maze.
+####Purpose: The app finds the path from the given maze.
 
 Tools
 * Used Language: C

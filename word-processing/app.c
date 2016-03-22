@@ -1,6 +1,6 @@
 // Class    : ITCS 3146
 // Author   : Itgel Ganbold
-// Senction : 001    
+// Section : 001    
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +69,7 @@ main() {
         fclose(fp);                                             // close file
         getNumberOfLine(&perLineLimit);                         // get the number of line from terminal
         
+        //Uncomment below line to print tokens
         // printList(startPtr);
         
         //***Type justification

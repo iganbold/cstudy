@@ -1,236 +1,142 @@
+// Class    : ITCS 3146
+// Author   : Itgel Ganbold
+// Senction : 001    
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "list.h"
+#include "list.h"                                               // import linked list
+
 #define WORD_SIZE 50
 #define LIST_SIZE 500
-#define EXTRA_SPACE 1;
+#define FILE_NAME_SIZE 100
 
-void printSpace(int);
+void printSpace (int);
+void getFileName (char*);
+void getNumberOfLine (int*);
 
 main() {
     
-    LISTNODEPTR startPtr = NULL;        //used for storing the data
-    LISTNODEPTR queueBufferPtr = NULL;        //used for buffing the data from the list
-    int limit = 40;
-    FILE *fp;                           
+    LISTNODEPTR startPtr = NULL;                                //used for storing the data
+    LISTNODEPTR queueBufferPtr = NULL;                          //used for buffing the data from the list
+    int perLineLimit = 40;                                      //default per line limit is 40
+    char fileName[FILE_NAME_SIZE];
+    FILE *fp;                                                   
     
-    if((fp = fopen("./test-files/file4-1.txt","r")) == NULL) {
+    getFileName(fileName);                                      // get filename from terminal
+    
+    //***Read data and add data to Linked List
+    if((fp = fopen(fileName,"r")) == NULL) {
+        printf("File does not exist.\n");
         exit(EXIT_FAILURE);
     } else {
         
         char line[LIST_SIZE];
-        char splitter[]="+"; // prag splitter
-        while (fgets(line, LIST_SIZE , fp) != NULL)  {
+        char splitter[]="\n";                                   // prag splitter
+        while (fgets(line, LIST_SIZE , fp) != NULL)  {          // read data from a file line by line     
             if((strlen(line)) == 2)
             {
-                insert(&startPtr,splitter);
+                insert(&startPtr,splitter);                     // empty line add "\n" to Linked list
             } else {
-                int i=0,j=0;
-                char tempWord[WORD_SIZE]="\0";
-                int *test = (int *)malloc(sizeof(int));
-                for (; i <= strlen(line) ;i++,j++) {
-                    if(!isspace(line[i]))
+                int i=0,j=0;                                    // i is counter for loop , j is counter for tempWord
+                char tempWord[WORD_SIZE]="\0";                  // store word until next white space character
+                int *test = (int *)malloc(sizeof(int));         // used to determine white space characters
+                for (; i <= strlen(line) ;i++,j++) {            // read each character to find word and white space characters
+                    if(!isspace(line[i]))                       // check spaces
                     {
-                        if(*test == 1 || ispunct(line[i]) || ispunct(line[i-1]))
+                        // || ispunct(line[i]) || ispunct(line[i-1])
+                        if(*test == 1 || i == strlen(line))
                         {
                             if(tempWord[0] != '\0')
                             {
-                                insert(&startPtr,tempWord);
+                                insert(&startPtr,tempWord);     // add to list    
                                 *test = 0;
                                 j=0;
-                                memset(tempWord,0,WORD_SIZE);
+                                memset(tempWord,0,WORD_SIZE);   // clear tempWord in order store next word
                             }
                         }
-                        
-                        tempWord[j]=line[i];
+                    
+                        tempWord[j]=line[i];                    // making a word
                     }
-                    else {
-                        *test = 1;
-                    }
+                    else *test = 1;
                 }
                 
                 free(test);
             }
-        }
+        } // end of while loop
         
-        fclose(fp);
+        fclose(fp);                                             // close file
+        getNumberOfLine(&perLineLimit);                         // get the number of line from terminal
         
-        printList(startPtr);
+        // printList(startPtr);
         
-        //----------------------------------------------------------------------
-        
+        //***Type justification
         int buffSize = 0;
-        int wordSize = 0;
-        int wordCount = 0;
-        int wordSpace = 0;
-        int wordLastSpace = 0;
-    
-        while( startPtr != NULL)
-        {
+        int countNewLine = 0;
+        
+        while(startPtr != NULL) {
             
-            if((buffSize + (int)strlen(startPtr->data)) == limit) {
-                insert(&queueBufferPtr, (startPtr)->data);
-                delete(&startPtr,(startPtr->data));
-                
-                wordSpace = ((limit - wordSize) / wordCount);
-                wordLastSpace = wordSpace + ((limit - wordSize) % wordCount);
-                
-                while(wordCount != 0) {
+            buffSize = buffSize + (int)strlen(startPtr->data) +1;                       //keep track of number characsters for per line
+            
+            if(buffSize <= perLineLimit || (buffSize-1)==perLineLimit) {    
                     
-                    if(wordCount > 1)
-                    {
-                        printf("%s",(queueBufferPtr->data));
-                        printSpace(wordSpace);
-                    }
-                    else if(wordCount == 1)
-                    {
-                        printSpace(wordLastSpace);
-                        printf("%s",(queueBufferPtr->data));
-                    }
-                    delete(&queueBufferPtr, (queueBufferPtr->data));
-                    wordCount--;
-                }
-                printf(":%d %d %d %d\n",wordSize, wordCount,wordSpace,wordLastSpace);
-                buffSize = wordSize = wordCount = wordSpace = wordLastSpace = 0;
-            } else if((buffSize + (int)strlen(startPtr->data)) < limit) {
-                wordSize += (int)strlen(startPtr->data);
-                wordCount++;
-                buffSize = buffSize + ((int)strlen(startPtr->data)) + EXTRA_SPACE;
-                insert(&queueBufferPtr,(startPtr)->data);
+                // if track does reach the limit, then buffer (queueBufferPtr) the data from the list (startPtr) then delete the data from the list     
+                insert(&queueBufferPtr, (startPtr)->data);                  
                 delete(&startPtr,(startPtr->data));
+                
+                if(startPtr != NULL) {
+                    
+                    if(strcmp((queueBufferPtr->data), "\n") == 0 ) {                    //check the data is "\n" if it is then split the prograph
+                        buffSize=0;
+                        countNewLine++;
+                        if(countNewLine < 2)
+                            printf("\n\n");
+                    }
+                    else if((buffSize+(int)strlen(startPtr->data)) > perLineLimit) {    //if data is the last word of the line then print it ( 1. spaces 2. data)
+                        printSpace((perLineLimit-buffSize)+1);
+                        printf("%s",queueBufferPtr->data);
+                    } else {                                                            //otherwise print the data from the buffer (1. data  2. spaces)
+                        if( countNewLine !=0 ) countNewLine = 0; 
+                        printf("%s",queueBufferPtr->data);
+                        printSpace(1);
+                    }
+                    
+                    delete(&queueBufferPtr,(queueBufferPtr->data));                     //clear the buffer   
+                    
+                } else printf("%s\n",queueBufferPtr->data);
+                
             } else {
                 
-                wordSpace = ((limit - wordSize) / wordCount);
-                wordLastSpace = wordSpace + ((limit - wordSize) % wordCount);
-                
-                while(queueBufferPtr != NULL) {
-                    printf("%s",(queueBufferPtr->data));
-                    printSpace(1);
-                    delete(&queueBufferPtr, (queueBufferPtr->data));
-                    
-                    // printf("%s",(queueBufferPtr->data));
-                    // delete(&queueBufferPtr, (queueBufferPtr->data));
-                    // if(wordCount > 2)
-                    //     printSpace(wordSpace);
-                    // else if(wordCount == 2)
-                    //     printSpace(wordLastSpace);
-                    
-                    // wordCount--;
-                }
                 printf("\n");
-                // printf(":%d %d %d %d\n",wordSize, wordCount,wordSpace,wordLastSpace);
-                buffSize = wordSize = wordCount = wordSpace = wordLastSpace = 0;
+                buffSize=0;
+                
             }
-            
-            if(startPtr == NULL)
-            {
-                while(queueBufferPtr != NULL) {
-                    printf("%s",(queueBufferPtr->data));
-                    printSpace(1);
-                    delete(&queueBufferPtr, (queueBufferPtr->data));
-                }
-            }
-        }
+        } // end of while loop
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //---------------------------------------------------------------------
-        //Buffer
-        // int count=0,len = 0, spaces, word_space, last_word_space;
-        // limit = 40;
-        // char buff[50];
-        // while(startPtr != NULL) {
-            
-        //     strcpy(buff,startPtr->data);
-        //     delete(&startPtr,buff);
-            
-        //     if(strcmp(buff, "\n") == 0)
-        //         continue;
-                
-        //     len += (strlen(buff) + 1);
-            
-        //     if(len > (limit+1)) {
-        //         len -= strlen(buff);
-        //         spaces = limit - len;
-        //         //remove the added spaces +1
-        //         word_space=spaces/(count-1);
-                
-        //         if(spaces%(count-1) == 0)
-        //         {
-        //             while(1)
-        //             {
-        //                 strcpy(buff,queuePtr->data);
-        //                 printf("%s",buff);
-                        
-        //                 if(count >= 2)
-        //                     printSpace(word_space);
-                            
-        //                 delete(&queuePtr,buff);
-        //                 count--;
-                        
-        //                 if(count == 0)
-        //                 {
-        //                     printf("\n");
-        //                     break;
-        //                 }
-        //             }
-                    
-        //         } else {
-                    
-        //             last_word_space = (word_space + (spaces%(count-1)));
-                    
-        //             while(1)
-        //             {
-        //                 strcpy(buff,queuePtr->data);
-        //                 printf("%s",buff);
-                        
-        //                 if(count == 2)
-        //                     printSpace(last_word_space);
-        //                 else if(count >= 3)
-        //                     printSpace(word_space);
-                            
-        //                 delete(&queuePtr,buff);
-        //                 count--;
-                        
-        //                 if(count == 0)
-        //                 {
-        //                     printf("\n");
-        //                     break;
-        //                 }
-        //             }
-        //         }
-                
-        //         word_space = 0;
-        //         last_word_space = 0;
-        //         len = 0;
-        //         spaces = 0;
-
-        //     } // end of if limit
-            
-        //     insert(&queuePtr,buff);
-        //     count++;
-        // }// end of while
     }
 }
 
+//Gets filename from terminal
+void getFileName(char *fileName) {
+    printf("File name and location : ");
+    scanf("%s",fileName);    
+}
+
+//Gets number of line for per line from terminal
+void getNumberOfLine(int *size) {
+    while(1) {
+        printf("Number of Characters between 40 and 100 for per line : ");
+        scanf("%d",size);    
+
+        if(*size >= 40 && *size <= 100) break;
+        else printf("Please enter correct number.\n");
+    }
+}
+
+//Prints the space between words the during the word processing
 void printSpace(int spaceSize) {
     int count;
-    for(count=0; count <= spaceSize; count++) {
-        printf(" ");
-    }
+    for(count=0; count < spaceSize; count++) printf(" ");
 }
 

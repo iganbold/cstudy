@@ -9,7 +9,6 @@
     Main Data Structure: 
         Single Linked List (char data[50], *nextPtr)
         Queue from Single Linked List for buffering
-                         
 
     Algorithm (Read from a file and save to Linked list):
         1. read data from a file line by line

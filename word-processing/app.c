@@ -1,6 +1,6 @@
 // Class    : ITCS 3146
 // Author   : Itgel Ganbold
-// Section : 001    
+// Section  : 001    
 
 #include <stdio.h>
 #include <stdlib.h>
